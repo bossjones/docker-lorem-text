@@ -1,0 +1,20 @@
+#!/usr/bin/execlineb -P
+
+with-contenv
+
+# TERM broadcast is ignored in order to shut down gracefully,
+# Shutdown implemented in /etc/cont-finish.d
+
+trap
+{
+  term
+  {
+    echo [run app] TERM received
+  }
+  hup
+  {
+    echo [run app] HUP received
+  }
+}
+
+python3 run.py

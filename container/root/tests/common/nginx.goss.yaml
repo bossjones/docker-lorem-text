@@ -1,0 +1,58 @@
+gossfile:
+  ../../goss.base.yaml: {}
+
+command:
+  nginx -v:
+    exit-status: 0
+    stderr: ['nginx/1.']
+    stdout: ['!/./']
+  nginx -t:
+    exit-status: 0
+    stderr: ['is ok']
+    stdout: ['!/./']
+
+file:
+  /etc/nginx/nginx.conf:
+    exists: true
+    contains:
+      - '/#{0}worker_processes\s*(auto|\d+);/'
+      - '/#{0}pid\s*\/tmp\/.nginx\/nginx.pid;/'
+      - '/#{0}error_log\s*/dev/stdout warn;/'
+      - '/#{0}worker_rlimit_nofile\s*\d+;/'
+      - '/#{0}use\s*epoll\;/'
+      - '/#{0}multi_accept\s*on;/'
+      - '/#{0}worker_connections\s*\d+;/'
+      - '/#{0}server_tokens\s*off;/'
+      - '/#{0}large_client_header_buffers\s*\d+ \d+k;/'
+      - '/#{0}client_header_buffer_size\s*\d+k;/'
+      - '/#{0}client_body_buffer_size\s*\d+k;/'
+      - '/#{0}types_hash_max_size\s*\d+;/'
+      - '/#{0}send_timeout\s*\d+;/'
+      - '/#{0}client_body_timeout\s*\d+;/'
+      - '/#{0}reset_timedout_connection\s*on;/'
+      - '/#{0}keepalive_requests\s*\d+;/'
+      - '/#{0}tcp_nodelay\s*on;/'
+      - '/#{0}tcp_nopush\s*on;/'
+      - '/#{0}include\s*mime.types;/'
+      - '/#{0}default_type\s*application/octet-stream;/'
+      - '/#{0}access_log\s*/dev/stdout\s*main;/'
+      - '/#{0}sendfile\s*on;/'
+      - '/#{0}keepalive_timeout\s*\d+;/'
+      - '/#{0}client_body_temp_path\s*/tmp/.nginx/client_body;/'
+      - '/#{0}fastcgi_temp_path\s*/tmp/.nginx/fastcgi_temp;/'
+      - '/#{0}proxy_temp_path\s*/tmp/.nginx/proxy_temp;/'
+      - '/#{0}scgi_temp_path\s*/tmp/.nginx/scgi_temp;/'
+      - '/#{0}uwsgi_temp_path\s*/tmp/.nginx/uwsgi_temp;/'
+      - '/#{0}include\s*\/etc\/nginx\/sites-available\/\*;/'
+      - '    include /etc/nginx/http_headers.conf;'
+  /etc/nginx/http_headers.conf:
+    exists: true
+    contains:
+      - '/#{0}add_header\s+X-XSS-Protection\s+"1;\s*mode=block"\s+always;/'
+      - '/#{0}add_header\s+X-Content-Type-Options\s+"nosniff"\s+always;/'
+  /etc/nginx/mime.types:
+    exists: true
+    contains:
+      - '/#{0}font\/woff\s*woff;/'
+      - '/#{0}font\/woff2\s*woff2;/'
+      - '!/application\/font-woff/'
