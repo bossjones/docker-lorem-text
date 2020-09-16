@@ -17,4 +17,4 @@ trap
   }
 }
 
-python3 run.py
+poetry run python /app/run.py
