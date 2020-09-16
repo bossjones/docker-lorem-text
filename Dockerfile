@@ -70,5 +70,6 @@ ENV PATH="~/.poetry/bin:${PATH}"
 
 # Overlay the root filesystem from this repo
 COPY ./container/root /
+COPY . /app
 
 # ENTRYPOINT ["/init"]
