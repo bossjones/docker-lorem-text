@@ -42,19 +42,20 @@ for logger_name in LOGGERS:
 
 logger.configure(handlers=[{"sink": sys.stderr, "level": LOGGING_LEVEL}])
 
+try:
+    counter = 1
 
-counter = 1
-
-while counter < 20:
-    msg = lorem.sentence()
-    log.info(f"{counter} - {msg}")
-    counter = counter + 1
-    time.sleep(0.75)
+    while counter < 20:
+        msg = lorem.sentence()
+        log.info(f"{counter} - {msg}")
+        counter = counter + 1
+        time.sleep(0.75)
+except (KeyboardInterrupt, SystemExit):
+    log.info("app recieved a Ctrl-C. Exiting gracefully...")
 
 def sigint_handler_exit(*args):
     """Exit on Ctrl+C from python"""
 
-    log.info("app recieved a Ctrl-C. Exiting gracefully...")
     sys.exit(0)
 
 signal.signal(signal.SIGINT, sigint_handler_exit)
