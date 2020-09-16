@@ -72,7 +72,10 @@ ENV PATH="~/.poetry/bin:${PATH}"
 COPY ./container/root /
 COPY . /app
 
-RUN bash -c "poetry install"
+# in-project = false
+# path = "{cache-dir}/.poetry_venvs"
+
+RUN bash -c "poetry config virtualenvs.create && poetry install --no-dev"
 
 # ENTRYPOINT ["/init"]
 
