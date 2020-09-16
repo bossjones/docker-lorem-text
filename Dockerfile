@@ -40,20 +40,20 @@ RUN curl -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/p
 
 RUN PYTHONDONTWRITEBYTECODE=true pyenv install 3.7.8 && pyenv global 3.7.8
 
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 && \
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python && \
     poetry completions bash > /etc/bash_completion.d/poetry.bash-completion
 
-RUN pip3 install --no-cache-dir lorem-text && \
-    pyenv rehash
+# RUN pip3 install --no-cache-dir lorem-text && \
+#     pyenv rehash
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends netcat && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# RUN apt-get update && \
+#     apt-get install -y --no-install-recommends netcat && \
+#     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY poetry.lock pyproject.toml ./
-RUN pip install poetry==1.0.* && \
-    poetry config virtualenvs.create false && \
-    poetry install --no-dev
+# COPY poetry.lock pyproject.toml ./
+# RUN pip install poetry==1.0.* && \
+#     poetry config virtualenvs.create false && \
+#     poetry install --no-dev
 
 # Overlay the root filesystem from this repo
 COPY ./container/root /
