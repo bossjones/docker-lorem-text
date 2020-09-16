@@ -8,7 +8,7 @@ from loguru import logger
 import threading
 import time
 
-logger = logging.getLogger("app")
+log = logging.getLogger("app")
 logger.setLevel("DEBUG")
 
 class InterceptHandler(logging.Handler):
@@ -46,7 +46,7 @@ counter = 1
 
 while counter < 20:
     msg = lorem.sentence()
-    logging.info(f"{counter} - {msg}")
+    log.info(f"{counter} - {msg}")
     counter = counter + 1
     time.sleep(0.75)
 
