@@ -17,4 +17,4 @@ trap
   }
 }
 
-poetry run python /app/run.py
+bash -c "poetry run python /app/run.py"
