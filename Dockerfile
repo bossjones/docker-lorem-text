@@ -72,4 +72,7 @@ ENV PATH="~/.poetry/bin:${PATH}"
 COPY ./container/root /
 COPY . /app
 
+RUN bash -c "poetry install"
+
 # ENTRYPOINT ["/init"]
+
