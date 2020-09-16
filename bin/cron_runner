@@ -2,9 +2,9 @@
 
 # ================== Cron entry point ===============================================================
 # How to use:
-# /app/bin/cron_runner service.name [additional_args]
+# /app/bin/cron_runner /app/run.py
 #
-# Note - /init.sh will load environment variables, then the traditional `/app/bin/cron $@` cron runner
+# Note - /init.sh will load environment variables, then the traditional `poetry run python $@` cron runner
 # ====================================================================================================
 
 # Signal to init processes to avoid any webserver startup, really anything but `web` will be fine

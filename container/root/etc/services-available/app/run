@@ -1,20 +1,20 @@
 #!/usr/bin/execlineb -P
 
-with-contenv
+# with-contenv
 
-# TERM broadcast is ignored in order to shut down gracefully,
-# Shutdown implemented in /etc/cont-finish.d
+# # TERM broadcast is ignored in order to shut down gracefully,
+# # Shutdown implemented in /etc/cont-finish.d
 
-trap
-{
-  term
-  {
-    echo [run app] TERM received
-  }
-  hup
-  {
-    echo [run app] HUP received
-  }
-}
+# trap
+# {
+#   term
+#   {
+#     echo [run app] TERM received
+#   }
+#   hup
+#   {
+#     echo [run app] HUP received
+#   }
+# }
 
-bash -c "cd /app; echo $(pwd); poetry run python /app/run.py"
+# bash -c "cd /app; echo $(pwd); poetry run python /app/run.py"
