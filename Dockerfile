@@ -40,8 +40,11 @@ RUN curl -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/p
 
 RUN PYTHONDONTWRITEBYTECODE=true pyenv install 3.7.8 && pyenv global 3.7.8
 
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python && \
-    poetry completions bash > /etc/bash_completion.d/poetry.bash-completion
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+
+ENV PATH="$HOME/.poetry/bin:${PATH}"
+
+RUN poetry completions bash > /etc/bash_completion.d/poetry.bash-completion
 
 # RUN pip3 install --no-cache-dir lorem-text && \
 #     pyenv rehash
