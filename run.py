@@ -7,6 +7,7 @@ from lorem_text import lorem
 from loguru import logger
 import threading
 import time
+import signal
 
 log = logging.getLogger("app")
 log.setLevel("DEBUG")
@@ -50,4 +51,10 @@ while counter < 20:
     counter = counter + 1
     time.sleep(0.75)
 
+def sigint_handler_exit(*args):
+    """Exit on Ctrl+C from python"""
 
+    log.info("app recieved a Ctrl-C. Exiting gracefully...")
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, sigint_handler_exit)
