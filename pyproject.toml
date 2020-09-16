@@ -7,10 +7,10 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-loguru = "*"
-invoke = "*"
-better_exceptions = "*"
-lorem-text = "*"
+loguru = "^0.5.2"
+invoke = "^1.4.1"
+better_exceptions = "^0.2.2"
+lorem-text = "^1.5"
 
 # [tool.poetry.dev-dependencies]
 # black = "^19.10b0"
