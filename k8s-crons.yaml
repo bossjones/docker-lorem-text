@@ -15,9 +15,12 @@ spec:
         spec:
           containers:
           - args:
-            - /app/run.py
+            - |
+              trap "touch /syncronize-sidecars/main-terminated" EXIT
+              /app/bin/cron_runner /app/run.py
             command:
-            - /app/bin/cron_runner
+            - /bin/bash
+            - -c
             env:
             - name: POD_UID
               valueFrom:
@@ -55,6 +58,9 @@ spec:
               requests:
                 cpu: 500m
                 memory: 200Mi
+            volumeMounts:
+            - mountPath: /syncronize-sidecars
+              name: syncronize-sidecars
           - env:
             - name: POD_UID_FLUENT_BIT
               valueFrom:
@@ -104,10 +110,25 @@ spec:
               name: fluent-data
             - mountPath: /fluent-bit/etc
               name: fluent-bit-config
-          - command:
+            - mountPath: /syncronize-sidecars
+              name: syncronize-sidecars
+          # FIXME: To do, we need to syncronize these tasks between sidecars
+          # See possible solution: https://github.com/kubernetes/kubernetes/issues/25908#issuecomment-308569672
+            command:
             - /bin/bash
             - -xc
-            - s6_pid=$(pgrep s6-svscan) fluentbit_pid=$(pgrep fluent-bit) cron_pid=$(pidof cron_runner); tail --pid=$cron_pid -f /dev/null && kill -15 $s6_pid;
+          - args:
+            - |
+              until pidof fluent-bit &> /dev/null
+              do
+                  echo "Waiting for fluent-bit to start up so we can get the pid ..."
+                  sleep 1
+              done
+              CHILD_PID=$(pidof fluent-bit)
+              (while true; do if [[ -f "/syncronize-sidecars/main-terminated" ]]; then kill $CHILD_PID; fi; sleep 1; done) &
+              wait $CHILD_PID
+              if [[ -f "/syncronize-sidecars/main-terminated" ]]; then exit 0; fi
+            # s6_pid=$(pgrep s6-svscan) fluentbit_pid=$(pgrep fluent-bit) cron_pid=$(pidof cron_runner); tail --pid=$cron_pid -f /dev/null && kill -15 $s6_pid;
             image: behance/docker-base:2.7.0-ubuntu-20.04
             name: observer-sidecar
             resources:
@@ -124,6 +145,8 @@ spec:
           restartPolicy: Never
           shareProcessNamespace: true
           volumes:
+          - emptyDir: {}
+            name: syncronize-sidecars
           - emptyDir: {}
             name: logging-volume
           - emptyDir: {}
