@@ -24,3 +24,6 @@ build:
 
 push:
 	$(DOCKER_PUSH)
+
+bash:
+	docker run -it --rm $(CONTAINER_NAME):$(CONTAINER_TAG) bash
