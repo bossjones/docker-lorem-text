@@ -17,4 +17,4 @@ trap
   }
 }
 
-bash -c "poetry run python /app/run.py"
+bash -c "cd /app; echo $(pwd); poetry run python /app/run.py"
