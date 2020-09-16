@@ -9,7 +9,7 @@ import threading
 import time
 
 log = logging.getLogger("app")
-logger.setLevel("DEBUG")
+log.setLevel("DEBUG")
 
 class InterceptHandler(logging.Handler):
     def emit(self, record: logging.LogRecord) -> None:  # pragma: no cover
