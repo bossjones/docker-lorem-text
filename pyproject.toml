@@ -6,16 +6,10 @@ authors = ["Malcolm Jones <jarvis@theblacktonystark.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-# python = "^3.7"
-# Unidecode = "^1.1"
-# loguru = "^0.5.0"
-# invoke = "^1.4.1"
-# better_exceptions = "^0.2.2"
 python = "^3.7"
-Unidecode = "^1.1"
-loguru = "^0.5"
-invoke = "^1.4"
-better_exceptions = "^0.2"
+loguru = "^0.5.2"
+invoke = "^1.4.1"
+better_exceptions = "^0.2.2"
 lorem-text = "^1.5"
 
 [tool.poetry.dev-dependencies]
