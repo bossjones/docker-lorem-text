@@ -18,9 +18,7 @@ spec:
             - |
               trap "touch /tmp/pod/main-terminated" EXIT
               /app/bin/cron_runner /app/run.py
-            command:
-            - /bin/bash
-            - -c
+            command: ["/bin/bash", "-c"]
             env:
             - name: POD_UID
               valueFrom:
@@ -117,7 +115,7 @@ spec:
           # See possible solution: https://github.com/kubernetes/kubernetes/issues/25908#issuecomment-308569672
           - args:
             - |
-              until pgrep -f cron_runner &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
+              until pgrep -f "/app/bin/cron_runner /app/run.py" &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
               CRON_PID=$(pgrep -f cron_runner)
               until pgrep -f fluent-bit &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
               FLUENTBIT_PID=$(pgrep -f fluent-bit)
