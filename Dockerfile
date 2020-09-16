@@ -42,7 +42,7 @@ RUN PYTHONDONTWRITEBYTECODE=true pyenv install 3.7.8 && pyenv global 3.7.8
 
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 
-ENV PATH="$HOME/.poetry/bin:${PATH}"
+ENV PATH="~/.poetry/bin:${PATH}"
 
 RUN poetry completions bash > /etc/bash_completion.d/poetry.bash-completion
 
