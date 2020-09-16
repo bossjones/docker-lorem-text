@@ -114,20 +114,17 @@ spec:
               name: syncronize-sidecars
           # FIXME: To do, we need to syncronize these tasks between sidecars
           # See possible solution: https://github.com/kubernetes/kubernetes/issues/25908#issuecomment-308569672
-            command:
-            - /bin/bash
-            - -xc
+            command: ["/bin/bash", "-xc"]
           - args:
             - |
-              until pidof fluent-bit &> /dev/null
-              do
-                  echo "Waiting for fluent-bit to start up so we can get the pid ..."
-                  sleep 1
-              done
-              CHILD_PID=$(pidof fluent-bit)
-              (while true; do if [[ -f "/syncronize-sidecars/main-terminated" ]]; then kill $CHILD_PID; fi; sleep 1; done) &
-              wait $CHILD_PID
+              until pgrep -f cron_runner &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
+              CRON_PID=$(pgrep -f cron_runner)
+              until pgrep -f fluent-bit &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
+              FLUENTBIT_PID=$(pgrep -f fluent-bit)
+              (while true; do if [[ -f "/syncronize-sidecars/main-terminated" ]]; then kill $FLUENTBIT_PID; fi; sleep 1; done) &
+              tail --pid=$FLUENTBIT_PID -f /dev/null
               if [[ -f "/syncronize-sidecars/main-terminated" ]]; then exit 0; fi
+            # tail --pid=$CRON_PID -f /dev/null && CRON_PID=$(pidof fluent-bit)
             # s6_pid=$(pgrep s6-svscan) fluentbit_pid=$(pgrep fluent-bit) cron_pid=$(pidof cron_runner); tail --pid=$cron_pid -f /dev/null && kill -15 $s6_pid;
             image: behance/docker-base:2.7.0-ubuntu-20.04
             name: observer-sidecar
