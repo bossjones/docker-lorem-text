@@ -116,11 +116,14 @@ spec:
           - args:
             - |
               until pgrep -f "/app/bin/cron_runner /app/run.py" &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
-              CRON_PID=$(pgrep -f cron_runner)
+              CRON_PID=$(pgrep -f "/app/bin/cron_runner /app/run.py")
+              echo " [info] cron pid acquired CRON_PID=${CRON_PID}"
               until pgrep -f fluent-bit &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
               FLUENTBIT_PID=$(pgrep -f fluent-bit)
-              (while true; do if [[ -f "/tmp/pod/main-terminated" ]]; then kill $FLUENTBIT_PID; fi; sleep 1; done) &
+              echo " [info] fluent-bit pid acquired on FLUENTBIT_PID=${FLUENTBIT_PID}"
+              (while true; do if [[ -f "/tmp/pod/main-terminated" ]]; then echo " [running] kill $FLUENTBIT_PID to kill fluent-bit"; kill $FLUENTBIT_PID; echo "error code from killing fluent-bit ${?}" fi; sleep 1; done) &
               tail --pid=$FLUENTBIT_PID -f /dev/null
+              echo " [info] seems fluent-bit is dead. Let's finish up by bringing the observer down"
               if [[ -f "/tmp/pod/main-terminated" ]]; then exit 0; fi
             command: ["/bin/bash", "-xc"]
             image: behance/docker-base:2.7.0-ubuntu-20.04
