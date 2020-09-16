@@ -16,7 +16,7 @@ spec:
           containers:
           - args:
             - |
-              trap "touch /syncronize-sidecars/main-terminated" EXIT
+              trap "touch /tmp/pod/main-terminated" EXIT
               /app/bin/cron_runner /app/run.py
             command:
             - /bin/bash
@@ -59,8 +59,8 @@ spec:
                 cpu: 500m
                 memory: 200Mi
             volumeMounts:
-            - mountPath: /syncronize-sidecars
-              name: syncronize-sidecars
+            - mountPath: /tmp/pod
+              name: tmp-pod
           - env:
             - name: POD_UID_FLUENT_BIT
               valueFrom:
@@ -110,23 +110,28 @@ spec:
               name: fluent-data
             - mountPath: /fluent-bit/etc
               name: fluent-bit-config
-            - mountPath: /syncronize-sidecars
-              name: syncronize-sidecars
+            - mountPath: /tmp/pod
+              name: tmp-pod
+              readOnly: true
           # FIXME: To do, we need to syncronize these tasks between sidecars
           # See possible solution: https://github.com/kubernetes/kubernetes/issues/25908#issuecomment-308569672
-            command: ["/bin/bash", "-xc"]
           - args:
             - |
               until pgrep -f cron_runner &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
               CRON_PID=$(pgrep -f cron_runner)
               until pgrep -f fluent-bit &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
               FLUENTBIT_PID=$(pgrep -f fluent-bit)
-              (while true; do if [[ -f "/syncronize-sidecars/main-terminated" ]]; then kill $FLUENTBIT_PID; fi; sleep 1; done) &
+              (while true; do if [[ -f "/tmp/pod/main-terminated" ]]; then kill $FLUENTBIT_PID; fi; sleep 1; done) &
               tail --pid=$FLUENTBIT_PID -f /dev/null
-              if [[ -f "/syncronize-sidecars/main-terminated" ]]; then exit 0; fi
+              if [[ -f "/tmp/pod/main-terminated" ]]; then exit 0; fi
+            command: ["/bin/bash", "-xc"]
+            image: behance/docker-base:2.7.0-ubuntu-20.04
+            volumeMounts:
+            - mountPath: /tmp/pod
+              name: tmp-pod
+              readOnly: true
             # tail --pid=$CRON_PID -f /dev/null && CRON_PID=$(pidof fluent-bit)
             # s6_pid=$(pgrep s6-svscan) fluentbit_pid=$(pgrep fluent-bit) cron_pid=$(pidof cron_runner); tail --pid=$cron_pid -f /dev/null && kill -15 $s6_pid;
-            image: behance/docker-base:2.7.0-ubuntu-20.04
             name: observer-sidecar
             resources:
               limits:
@@ -143,7 +148,7 @@ spec:
           shareProcessNamespace: true
           volumes:
           - emptyDir: {}
-            name: syncronize-sidecars
+            name: tmp-pod
           - emptyDir: {}
             name: logging-volume
           - emptyDir: {}
