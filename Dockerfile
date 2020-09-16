@@ -12,6 +12,11 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y build-essential curl git && \
     apt-get install -y zlib1g-dev libssl-dev libreadline-dev libyaml-dev libxml2-dev libxslt-dev bash-completion vim tree sudo python2.7-dev libffi-dev && \
+    apt-get install -y build-essential python-dev python-setuptools python-pip python-smbus && \
+    apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev && \
+    apt-get install -y zlib1g-dev libsqlite3-dev tk-dev && \
+    apt-get install -y libssl-dev openssl && \
+    apt-get install -y libffi-dev && \
     apt-get clean
 
 # sudo apt-get install libncursesw5-dev libgdbm-dev libc6-dev
@@ -48,8 +53,6 @@ RUN PYTHONDONTWRITEBYTECODE=true pyenv install 3.7.8 && pyenv global 3.7.8 && pi
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 
 ENV PATH="~/.poetry/bin:${PATH}"
-
-RUN apt-get install -y libffi-dev
 
 # RUN poetry completions bash > /etc/bash_completion.d/poetry.bash-completion
 
