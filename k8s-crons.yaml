@@ -1,0 +1,134 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  labels:
+    app: docker-lorem-test
+  name: stage-docker-lorem-test
+spec:
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: docker-lorem-test
+        spec:
+          containers:
+          - args:
+            - /app/run.py
+            command:
+            - /app/bin/cron_runner
+            env:
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: SERVER_APP_NAME
+              value: "docker-lorem-test"
+            - name: CFG_APP_DEBUG
+              value: "1"
+            - name: SERVER_LOG_MINIMAL
+              value: "1"
+            - name: PHP_FPM_MEMORY_LIMIT
+              value: 257M
+            - name: PHP_FPM_MAX_EXECUTION_TIME
+              value: "61"
+            - name: PHP_FPM_UPLOAD_MAX_FILESIZE
+              value: 100M
+            - name: SERVER_MAX_BODY_SIZE
+              value: 100m
+            - name: REPLACE_NEWRELIC_APP
+              value: abcdefg
+            - name: REPLACE_NEWRELIC_LICENSE
+              value: hijklmno
+            - name: S6_KILL_FINISH_MAXTIME
+              value: "1"
+            - name: S6_KILL_GRACETIME
+              value: "1"
+            image:  bossjones/docker-lorem-text:2-ubuntu-20.04
+            imagePullPolicy: Always
+            name: docker-lorem-test
+            resources:
+              limits:
+                cpu: "1"
+                memory: 300Mi
+              requests:
+                cpu: 500m
+                memory: 200Mi
+          - env:
+            - name: POD_UID_FLUENT_BIT
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: LOG_PARSER
+              value: docker
+            image: bossjones/test-fluent-bit:1.5.4-debug
+            name: fluent-bit
+            ports:
+            - containerPort: 2020
+            resources:
+              limits:
+                cpu: 250m
+                memory: 512Mi
+              requests:
+                cpu: 50m
+                memory: 128Mi
+            volumeMounts:
+            - mountPath: /logging-volume
+              name: logging-volume
+            - mountPath: /var/fluent-bit
+              name: fluent-data
+            - mountPath: /fluent-bit/etc
+              name: fluent-bit-config
+          - command:
+            - /bin/bash
+            - -xc
+            - s6_pid=$(pgrep s6-svscan) fluentbit_pid=$(pgrep fluent-bit) cron_pid=$(pidof cron_runner); tail --pid=$cron_pid -f /dev/null && kill -15 $s6_pid;
+            image: behance/docker-base:2.7.0-ubuntu-20.04
+            name: observer-sidecar
+            resources:
+              limits:
+                cpu: 90m
+                memory: 100Mi
+              requests:
+                cpu: 50m
+                memory: 50Mi
+            securityContext:
+              capabilities:
+                add:
+                - SYS_PTRACE
+          restartPolicy: Never
+          shareProcessNamespace: true
+          volumes:
+          - emptyDir: {}
+            name: logging-volume
+          - emptyDir: {}
+            name: fluent-data
+          - configMap:
+              name: fluent-bit-sidecar-config
+            name: fluent-bit-config
+  schedule: '*/1 * * * *'

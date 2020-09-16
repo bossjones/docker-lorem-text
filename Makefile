@@ -10,7 +10,7 @@ PROJECT_BIN_DIR = $(ROOT_DIR)/bin
 DATA_DIR = $(ROOT_DIR)/var
 SCRIPT_DIR = $(ROOT_DIR)/script
 
-.PHONY: default build
+.PHONY: default build push bash apply delete
 CONTAINER_NAME=bossjones/docker-lorem-text
 
 CONTAINER_TAG=$(shell sh -c "grep FROM ./Dockerfile" | awk -F':' '{print $$2}')
@@ -27,3 +27,9 @@ push:
 
 bash:
 	docker run -it --rm $(CONTAINER_NAME):$(CONTAINER_TAG) bash
+
+apply:
+	 kubectl --namespace=ns-team-behance-be-net-crons apply -f k8s-crons.yaml
+
+delete:
+	 kubectl --namespace=ns-team-behance-be-net-crons delete -f k8s-crons.yaml
