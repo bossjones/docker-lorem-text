@@ -43,7 +43,7 @@ RUN curl -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/p
     find ${PYENV_ROOT} -name "*.tmp" -exec rm {} \; && \
     find ${PYENV_ROOT} -type d -name ".git" -prune -exec rm -rf {} \;
 
-RUN PYTHONDONTWRITEBYTECODE=true pyenv install 3.7.8 && pyenv global 3.7.8
+RUN PYTHONDONTWRITEBYTECODE=true pyenv install 3.7.8 && pyenv global 3.7.8 && pip3 install -U pip
 
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 
