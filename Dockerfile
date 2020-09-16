@@ -44,7 +44,7 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 
 ENV PATH="~/.poetry/bin:${PATH}"
 
-RUN poetry completions bash > /etc/bash_completion.d/poetry.bash-completion
+# RUN poetry completions bash > /etc/bash_completion.d/poetry.bash-completion
 
 # RUN pip3 install --no-cache-dir lorem-text && \
 #     pyenv rehash
