@@ -115,6 +115,10 @@ spec:
           # See possible solution: https://github.com/kubernetes/kubernetes/issues/25908#issuecomment-308569672
           - args:
             - |
+              apt-get update;
+              apt-get install tree -y;
+              ps auxef;
+              tree;
               until pgrep -f "/app/bin/cron_runner /app/run.py" &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
               CRON_PID=$(pgrep -f "/app/bin/cron_runner /app/run.py")
               echo " [info] cron pid acquired CRON_PID=${CRON_PID}"
