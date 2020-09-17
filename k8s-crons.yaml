@@ -123,7 +123,7 @@ spec:
               until pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf" &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
               FLUENTBIT_PID=$(pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf")
               echo " [info] fluent-bit pid acquired on FLUENTBIT_PID=${FLUENTBIT_PID}"
-              (while true; do if [[ -f "/tmp/pod/main-terminated" ]]; then echo " [running] s6-svc -wD -d  /var/run/s6/services/fluent-bit)"; s6-svc -wD -d  /var/run/s6/services/fluent-bit; echo "error code from killing fluent-bit ${?}"; fi; sleep 1; break; done) &
+              (while true; do if [[ -f "/tmp/pod/main-terminated" ]]; then echo " [running] s6-svc -wD -d /var/run/s6/services/fluent-bit)"; s6-svc -wD -d /var/run/s6/services/fluent-bit && break; else; echo "still waiting for cron to finish" fi; sleep 1; done) &
               tail --pid=$FLUENTBIT_PID -f /dev/null
               echo " [info] seems fluent-bit is dead. Let's finish up by bringing the observer down s6 using s6-svscanctl"
               s6-svscanctl -t /var/run/s6/services
