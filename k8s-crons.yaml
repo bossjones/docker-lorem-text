@@ -45,7 +45,7 @@ spec:
             - name: S6_KILL_FINISH_MAXTIME
               value: "1"
             - name: S6_KILL_GRACETIME
-              value: "1"
+              value: "10"
             image:  bossjones/docker-lorem-text:2-ubuntu-20.04
             imagePullPolicy: Always
             name: docker-lorem-test
