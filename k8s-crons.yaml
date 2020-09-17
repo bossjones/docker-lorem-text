@@ -117,7 +117,7 @@ spec:
             - |
               ps auxef;
               until pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py" &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
-              CRON_PID=$(pgrep -f "/app/bin/cron_runner /app/run.py")
+              CRON_PID=$(pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py")
               echo " [info] cron pid acquired CRON_PID=${CRON_PID}"
               until pgrep -f fluent-bit &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
               FLUENTBIT_PID=$(pgrep -f fluent-bit)
