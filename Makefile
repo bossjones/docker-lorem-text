@@ -33,3 +33,8 @@ apply:
 
 delete:
 	 kubectl --namespace=ns-team-behance-be-net-crons delete -f k8s-crons.yaml
+
+cm-apply:
+	kubectl --namespace=ns-team-behance-be-net-crons apply -f fluent-bit-configmap.yaml
+cm-delete:
+	kubectl --namespace=ns-team-behance-be-net-crons delete -f fluent-bit-configmap.yaml
