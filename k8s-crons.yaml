@@ -119,8 +119,8 @@ spec:
               until pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py" &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
               CRON_PID=$(pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py")
               echo " [info] cron pid acquired CRON_PID=${CRON_PID}"
-              until pgrep -f fluent-bit &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
-              FLUENTBIT_PID=$(pgrep -f fluent-bit)
+              until pgrep -fl "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf" &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
+              FLUENTBIT_PID=$(pgrep -fl "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf")
               echo " [info] fluent-bit pid acquired on FLUENTBIT_PID=${FLUENTBIT_PID}"
               (while true; do if [[ -f "/tmp/pod/main-terminated" ]]; then echo " [running] kill $FLUENTBIT_PID to kill fluent-bit"; kill $FLUENTBIT_PID; echo "error code from killing fluent-bit ${?}"; fi; sleep 1; done) &
               tail --pid=$FLUENTBIT_PID -f /dev/null
