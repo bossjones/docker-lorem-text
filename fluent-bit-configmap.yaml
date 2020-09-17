@@ -27,7 +27,7 @@ data:
       storage.path /var/fluent-bit/buffers
       # Each input also needs a storage.type config set
       # https://docs.fluentbit.io/manual/configuration/buffering#input-section-configuration
-      Grace 10 
+      Grace 5
     [INPUT]
       # Read logs from the Docker or CRI-O logging driver
       # https://git.corp.adobe.com/adobe-platform/k8s-docker-logging-driver
