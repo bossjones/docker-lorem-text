@@ -91,6 +91,7 @@ spec:
             - name: LOG_PARSER
               value: docker
             image: bossjones/test-fluent-bit:1.5.4-debug
+            imagePullPolicy: Always
             name: fluent-bit
             ports:
             - containerPort: 2020
