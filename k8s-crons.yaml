@@ -137,8 +137,8 @@ spec:
               until pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf" &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
               FLUENTBIT_PID=$(pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf")
               echo " [info] fluent-bit pid acquired on FLUENTBIT_PID=${FLUENTBIT_PID}"
-              tail --pid=$FLUENTBIT_PID -f /dev/null
-              echo " [info] seems fluent-bit is dead. Let's finish up by bringing the observer down s6 using s6-svscanctl"
+              # tail --pid=$FLUENTBIT_PID -f /dev/null
+              # echo " [info] seems fluent-bit is dead."
               if [[ -f "/tmp/pod/main-terminated" ]]; then exit 0; fi
             command: ["/bin/bash", "-xc"]
             # s6-svc -wD -d  /var/run/s6/services/fluent-bit
