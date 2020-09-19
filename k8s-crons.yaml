@@ -114,6 +114,20 @@ spec:
               readOnly: true
           # FIXME: To do, we need to syncronize these tasks between sidecars
           # See possible solution: https://github.com/kubernetes/kubernetes/issues/25908#issuecomment-308569672
+          # - args:
+          #   - |
+          #     ps auxef;
+          #     until pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py" &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
+          #     CRON_PID=$(pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py")
+          #     echo " [info] cron pid acquired CRON_PID=${CRON_PID}"
+          #     until pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf" &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
+          #     FLUENTBIT_PID=$(pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf")
+          #     echo " [info] fluent-bit pid acquired on FLUENTBIT_PID=${FLUENTBIT_PID}"
+          #     (while true; do if [[ -f "/tmp/pod/main-terminated" ]]; then kill $(pgrep -f "^s6-svscan -t0 /var/run/s6/services") && break; else echo "still waiting for cron to finish"; fi; sleep 1; done) &
+          #     tail --pid=$FLUENTBIT_PID -f /dev/null
+          #     echo " [info] seems fluent-bit is dead. Let's finish up by bringing the observer down s6 using s6-svscanctl"
+          #     # s6-svscanctl -t /var/run/s6/services
+          #     if [[ -f "/tmp/pod/main-terminated" ]]; then exit 0; fi
           - args:
             - |
               ps auxef;
@@ -123,10 +137,8 @@ spec:
               until pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf" &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
               FLUENTBIT_PID=$(pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf")
               echo " [info] fluent-bit pid acquired on FLUENTBIT_PID=${FLUENTBIT_PID}"
-              (while true; do if [[ -f "/tmp/pod/main-terminated" ]]; then kill $(pgrep -f "^s6-svscan -t0 /var/run/s6/services") && break; else echo "still waiting for cron to finish"; fi; sleep 1; done) &
               tail --pid=$FLUENTBIT_PID -f /dev/null
               echo " [info] seems fluent-bit is dead. Let's finish up by bringing the observer down s6 using s6-svscanctl"
-              # s6-svscanctl -t /var/run/s6/services
               if [[ -f "/tmp/pod/main-terminated" ]]; then exit 0; fi
             command: ["/bin/bash", "-xc"]
             # s6-svc -wD -d  /var/run/s6/services/fluent-bit
