@@ -13,7 +13,7 @@ data:
   fluent-bit.conf: |
     [SERVICE]
       # https://docs.fluentbit.io/manual/configuration/file#config_section
-      Flush 1
+      Flush 5
       Log_Level trace
       Daemon off
       Parsers_File parsers.conf
