@@ -14,7 +14,7 @@ data:
     [SERVICE]
       # https://docs.fluentbit.io/manual/configuration/file#config_section
       Flush 1
-      Log_Level trace
+      Log_Level info
       Daemon off
       Parsers_File parsers.conf
       # Configure metrics endpoint
