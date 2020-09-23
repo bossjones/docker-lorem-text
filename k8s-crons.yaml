@@ -43,7 +43,7 @@ spec:
             - name: REPLACE_NEWRELIC_LICENSE
               value: hijklmno
             - name: S6_KILL_FINISH_MAXTIME
-              value: "1"
+              value: "5000"
             - name: S6_KILL_GRACETIME
               value: "60000"
             image:  bossjones/docker-lorem-text:2-ubuntu-20.04
