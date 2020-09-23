@@ -62,6 +62,18 @@ spec:
             - mountPath: /tmp/pod
               name: tmp-pod
           - env:
+            - name: SERVER_APP_NAME
+              value: "fluent-bit"
+            - name: CFG_APP_DEBUG
+              value: "1"
+            - name: SERVER_LOG_MINIMAL
+              value: "1"
+            - name: S6_KILL_FINISH_MAXTIME
+              value: "5000"
+            - name: S6_KILL_GRACETIME
+              value: "60000"
+            - name: S6_SERVICES_GRACETIME
+              value: "60000"
             - name: POD_UID_FLUENT_BIT
               valueFrom:
                 fieldRef:
