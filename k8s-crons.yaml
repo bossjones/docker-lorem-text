@@ -48,7 +48,7 @@ spec:
               value: "60000"
             - name: S6_SERVICES_GRACETIME
               value: "60000"
-            image:  bossjones/docker-lorem-text:2-ubuntu-20.04
+            image:  behance/docker-lorem-text:2-ubuntu-20.04
             imagePullPolicy: Always
             name: docker-lorem-test
             resources:
@@ -104,7 +104,7 @@ spec:
                   fieldPath: status.hostIP
             - name: LOG_PARSER
               value: docker
-            image: bossjones/test-fluent-bit:1.5.4-debug
+            image: behance/test-fluent-bit:1.5.4-debug
             imagePullPolicy: Always
             name: fluent-bit
             ports:

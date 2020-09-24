@@ -11,7 +11,7 @@ DATA_DIR = $(ROOT_DIR)/var
 SCRIPT_DIR = $(ROOT_DIR)/script
 
 .PHONY: default build push bash apply delete
-CONTAINER_NAME=bossjones/docker-lorem-text
+CONTAINER_NAME=behance/docker-lorem-text
 
 CONTAINER_TAG=$(shell sh -c "grep FROM ./Dockerfile" | awk -F':' '{print $$2}')
 DOCKER_BUILD=docker build -t $(CONTAINER_NAME):$(CONTAINER_TAG) .

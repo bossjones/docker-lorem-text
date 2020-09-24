@@ -5,7 +5,7 @@
 
 name: docker-lorem-text
 # root: ~/
-root: ~/dev/bossjones/docker-lorem-text
+root: ~/dev/behance/docker-lorem-text
 tmux_options: -2
 # set-option -g default-shell /usr/local/bin/zsh
 

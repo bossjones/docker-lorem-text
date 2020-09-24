@@ -155,7 +155,7 @@ def confirm():
 #         secret = os.environ.get(env_var_name)
 #     return secret
 
-# SOURCE: https://github.com/bossjones/pocketsphinx-build/blob/master/pocketsphinx_build/build.py
+# SOURCE: https://github.com/behance/pocketsphinx-build/blob/master/pocketsphinx_build/build.py
 
 # SOURCE: https://github.com/ARMmbed/mbed-cli/blob/f168237fabd0e32edcb48e214fc6ce2250046ab3/test/util.py
 # Process execution
