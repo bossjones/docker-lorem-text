@@ -5,9 +5,13 @@ metadata:
     app: docker-lorem-test
   name: stage-docker-lorem-test
 spec:
+  # Ignore failures?
+  # https://stackoverflow.com/questions/51657105/how-to-ensure-kubernetes-cronjob-does-not-restart-on-failure
   concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
+      backoffLimit: 0
       template:
         metadata:
           labels:
