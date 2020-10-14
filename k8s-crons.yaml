@@ -21,6 +21,7 @@ spec:
           - args:
             - |
               trap "touch /tmp/pod/main-terminated" EXIT
+              (while true; do if [ -f "/tmp/pod/fluent-bit-ready" ]; then echo " [cron] fluent-bit is ready, running cron"; break; else; echo " [cron] waiting for fluent-bit ..."; fi; sleep 1; done)
               /app/bin/cron_runner /app/run.py
             command: ["/bin/bash", "-c"]
             env:
@@ -108,7 +109,8 @@ spec:
                   fieldPath: status.hostIP
             - name: LOG_PARSER
               value: docker
-            image: behance/test-fluent-bit:1.5.4-debug
+            # image: behance/test-fluent-bit:1.5.4-debug
+            image: docker-behance-release.dr-uw2.adobeitc.com/behance/docker-fluent-bit:1.5.4-debug
             imagePullPolicy: Always
             name: fluent-bit
             ports:
