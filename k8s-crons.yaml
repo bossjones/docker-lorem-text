@@ -183,6 +183,8 @@ spec:
           #       add:
           #       - SYS_PTRACE
           restartPolicy: Never
+          imagePullSecrets:
+            - name: klein-docker-auth
           shareProcessNamespace: true
           volumes:
           - emptyDir: {}
