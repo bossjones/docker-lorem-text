@@ -21,7 +21,7 @@ spec:
           - args:
             - |
               trap "touch /tmp/pod/main-terminated" EXIT
-              (while true; do if [ -f "/tmp/pod/fluent-bit-ready" ]; then echo " [cron] fluent-bit is ready, running cron"; break; else; echo " [cron] waiting for fluent-bit ..."; fi; sleep 1; done)
+              (while true; do if [ -f "/tmp/pod/fluent-bit-ready" ]; then echo " [cron] fluent-bit is ready, running cron"; break; else echo " [cron] waiting for fluent-bit ..."; fi; sleep 1; done)
               /app/bin/cron_runner /app/run.py
             command: ["/bin/bash", "-c"]
             env:
