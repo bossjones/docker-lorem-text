@@ -194,4 +194,4 @@ spec:
           - configMap:
               name: fluent-bit-sidecar-config
             name: fluent-bit-config
-  schedule: '*/5 * * * *'
+  schedule: '*/2 * * * *'
