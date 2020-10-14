@@ -148,40 +148,40 @@ spec:
           #     echo " [info] seems fluent-bit is dead. Let's finish up by bringing the observer down s6 using s6-svscanctl"
           #     # s6-svscanctl -t /var/run/s6/services
           #     if [[ -f "/tmp/pod/main-terminated" ]]; then exit 0; fi
-          - args:
-            - |
-              ps auxef;
-              until pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py" &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
-              CRON_PID=$(pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py")
-              echo " [info] cron pid acquired CRON_PID=${CRON_PID}"
-              until pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf" &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
-              FLUENTBIT_PID=$(pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf")
-              echo " [info] fluent-bit pid acquired on FLUENTBIT_PID=${FLUENTBIT_PID}"
-              # tail --pid=$FLUENTBIT_PID -f /dev/null
-              # echo " [info] seems fluent-bit is dead."
-              if [[ -f "/tmp/pod/main-terminated" ]]; then exit 0; fi
-            command: ["/bin/bash", "-xc"]
-            # s6-svc -wD -d  /var/run/s6/services/fluent-bit
-            # s6-svscanctl -t /var/run/s6/services
-            image: behance/docker-base:2.7.0-ubuntu-20.04
-            volumeMounts:
-            - mountPath: /tmp/pod
-              name: tmp-pod
-              readOnly: true
-            # tail --pid=$CRON_PID -f /dev/null && CRON_PID=$(pidof fluent-bit)
-            # s6_pid=$(pgrep s6-svscan) fluentbit_pid=$(pgrep fluent-bit) cron_pid=$(pidof cron_runner); tail --pid=$cron_pid -f /dev/null && kill -15 $s6_pid;
-            name: observer-sidecar
-            resources:
-              limits:
-                cpu: 90m
-                memory: 100Mi
-              requests:
-                cpu: 50m
-                memory: 50Mi
-            securityContext:
-              capabilities:
-                add:
-                - SYS_PTRACE
+          # - args:
+          #   - |
+          #     ps auxef;
+          #     until pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py" &> /dev/null; do echo "Waiting for cron_runner to start up so we can get the pid ..."; sleep 1; done
+          #     CRON_PID=$(pgrep -f "/bin/bash -e /app/bin/cron_runner /app/run.py")
+          #     echo " [info] cron pid acquired CRON_PID=${CRON_PID}"
+          #     until pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf" &> /dev/null; do echo "Waiting for fluent-bit to start up so we can get the pid ..."; sleep 1; done
+          #     FLUENTBIT_PID=$(pgrep -f "^/fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf")
+          #     echo " [info] fluent-bit pid acquired on FLUENTBIT_PID=${FLUENTBIT_PID}"
+          #     # tail --pid=$FLUENTBIT_PID -f /dev/null
+          #     # echo " [info] seems fluent-bit is dead."
+          #     if [[ -f "/tmp/pod/main-terminated" ]]; then exit 0; fi
+          #   command: ["/bin/bash", "-xc"]
+          #   # s6-svc -wD -d  /var/run/s6/services/fluent-bit
+          #   # s6-svscanctl -t /var/run/s6/services
+          #   image: behance/docker-base:2.7.0-ubuntu-20.04
+          #   volumeMounts:
+          #   - mountPath: /tmp/pod
+          #     name: tmp-pod
+          #     readOnly: true
+          #   # tail --pid=$CRON_PID -f /dev/null && CRON_PID=$(pidof fluent-bit)
+          #   # s6_pid=$(pgrep s6-svscan) fluentbit_pid=$(pgrep fluent-bit) cron_pid=$(pidof cron_runner); tail --pid=$cron_pid -f /dev/null && kill -15 $s6_pid;
+          #   name: observer-sidecar
+          #   resources:
+          #     limits:
+          #       cpu: 90m
+          #       memory: 100Mi
+          #     requests:
+          #       cpu: 50m
+          #       memory: 50Mi
+          #   securityContext:
+          #     capabilities:
+          #       add:
+          #       - SYS_PTRACE
           restartPolicy: Never
           shareProcessNamespace: true
           volumes:
